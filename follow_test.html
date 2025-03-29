@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rive Animation</title>
+    <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        canvas { width: 500px; height: 500px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <canvas id="riveCanvas"></canvas>
+
+    <script>
+        let riveInstance;
+        let isFollowActive = false; // 초기값
+
+        async function loadRive() {
+            riveInstance = new rive.Rive({
+                src: "follow.riv",
+                canvas: document.getElementById("riveCanvas"),
+                autoplay: true,
+                stateMachines: ["State Machine 1"], // Rive 상태 머신 이름 (필요시 수정)
+                onLoad: () => {
+                    console.log("Rive 파일 로드 완료!");
+                },
+            });
+        }
+
+        // 캔버스를 클릭하면 "B_Follow" 불리언 값을 토글
+        document.getElementById("riveCanvas").addEventListener("click", () => {
+            if (riveInstance) {
+                isFollowActive = !isFollowActive; // 값 변경
+                riveInstance.stateMachineInputs("State Machine 1").forEach(input => {
+                    if (input.name === "B_Follow") {
+                        input.value = isFollowActive;
+                    }
+                });
+                console.log(`B_Follow 값: ${isFollowActive}`);
+            }
+        });
+
+        loadRive();
+    </script>
+</body>
+</html>
